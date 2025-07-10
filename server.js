@@ -2,12 +2,14 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Sample JSON route
+const users = [
+  { id: 1, name: 'gokul', age: 25 },
+  { id: 2, name: 'Bob', age: 30 },
+  { id: 3, name: 'Charlie', age: 28 }
+];
+
 app.get('/api/users', (req, res) => {
-  res.json([
-    { id: 1, name: 'Gokul' },
-    { id: 2, name: 'ChatGPT' }
-  ]);
+  res.json(users);
 });
 
 app.listen(PORT, () => {
