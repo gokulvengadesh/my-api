@@ -2,10 +2,13 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
+// Serve static files from "public" folder
+app.use(express.static('public'));
+
 const users = [
-  { image: 'img3.webp', id: 1, name: 'gokul', age: 25 },
-  { image: 'img2.webp', id: 2, name: 'Bob', age: 30 },
-  { image: 'img3.webp', id: 3, name: 'Charlie', age: 28 }
+  { image: '/img1.webp', id: 1, name: 'gokul', age: 25 },
+  { image: '/img2.webp', id: 2, name: 'Bob', age: 30 },
+  { image: '/img3.webp', id: 3, name: 'Charlie', age: 28 }
 ];
 
 app.get('/api/users', (req, res) => {
