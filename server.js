@@ -21,18 +21,28 @@ app.get('/api/users', (req, res) => {
 app.post('/api/users', (req, res) => {
   const { name, age } = req.body;
 
-  // Basic validation
   if (!name || !age) {
     return res.status(400).json({ error: 'Name and age are required' });
   }
 
-  // Auto-generate ID
   const id = users.length ? users[users.length - 1].id + 1 : 1;
-
   const newUser = { id, name, age };
   users.push(newUser);
 
   res.status(201).json(newUser);
+});
+
+// ✅ DELETE a user by ID
+app.delete('/api/users/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const index = users.findIndex(user => user.id === id);
+
+  if (index !== -1) {
+    const deletedUser = users.splice(index, 1)[0];
+    res.json({ message: 'User deleted', user: deletedUser });
+  } else {
+    res.status(404).json({ error: 'User not found' });
+  }
 });
 
 // Start server
