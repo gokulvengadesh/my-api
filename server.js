@@ -2,11 +2,11 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Middleware to parse JSON bodies
+// Middleware to parse JSON body
 app.use(express.json());
 
 // In-memory users array
-const users = [
+let users = [
   { id: 1, name: 'gokul', age: 25 },
   { id: 2, name: 'Bob', age: 30 },
   { id: 3, name: 'Charlie', age: 28 }
@@ -32,21 +32,10 @@ app.post('/api/users', (req, res) => {
   res.status(201).json(newUser);
 });
 
-// ✅ DELETE user using ID in the URL (e.g. /api/users/2)
-app.delete('/api/users/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = users.findIndex(user => user.id === id);
-
-  if (index !== -1) {
-    const deletedUser = users.splice(index, 1)[0];
-    res.json({ message: 'User deleted by URL ID', user: deletedUser });
-  } else {
-    res.status(404).json({ error: 'User not found' });
-  }
-});
-
-// ✅ DELETE user using ID in the body (e.g. { "id": 2 })
+// ✅ DELETE user using ID from body
 app.delete('/api/users', (req, res) => {
+  console.log('Request Body:', req.body); // Debug line
+
   const { id } = req.body;
 
   if (typeof id !== 'number') {
@@ -54,13 +43,12 @@ app.delete('/api/users', (req, res) => {
   }
 
   const index = users.findIndex(user => user.id === id);
-
-  if (index !== -1) {
-    const deletedUser = users.splice(index, 1)[0];
-    res.json({ message: 'User deleted by body ID', user: deletedUser });
-  } else {
-    res.status(404).json({ error: 'User not found' });
+  if (index === -1) {
+    return res.status(404).json({ error: 'User not found' });
   }
+
+  const deletedUser = users.splice(index, 1)[0];
+  res.json({ message: 'User deleted by body ID', user: deletedUser });
 });
 
 // Start server
