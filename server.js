@@ -32,14 +32,32 @@ app.post('/api/users', (req, res) => {
   res.status(201).json(newUser);
 });
 
-// ✅ DELETE a user by ID
+// ✅ DELETE user using ID in the URL (e.g. /api/users/2)
 app.delete('/api/users/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const index = users.findIndex(user => user.id === id);
 
   if (index !== -1) {
     const deletedUser = users.splice(index, 1)[0];
-    res.json({ message: 'User deleted', user: deletedUser });
+    res.json({ message: 'User deleted by URL ID', user: deletedUser });
+  } else {
+    res.status(404).json({ error: 'User not found' });
+  }
+});
+
+// ✅ DELETE user using ID in the body (e.g. { "id": 2 })
+app.delete('/api/users', (req, res) => {
+  const { id } = req.body;
+
+  if (typeof id !== 'number') {
+    return res.status(400).json({ error: 'ID must be a number in the body' });
+  }
+
+  const index = users.findIndex(user => user.id === id);
+
+  if (index !== -1) {
+    const deletedUser = users.splice(index, 1)[0];
+    res.json({ message: 'User deleted by body ID', user: deletedUser });
   } else {
     res.status(404).json({ error: 'User not found' });
   }
