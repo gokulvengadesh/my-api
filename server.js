@@ -32,24 +32,24 @@ app.post('/api/users', (req, res) => {
   res.status(201).json(newUser);
 });
 
-// ✅ DELETE user using ID from body
+// ✅ DELETE user using ID and name from body
 app.delete('/api/users', (req, res) => {
-  console.log('Request Body:', req.body); // Debug line
+  const { id, name } = req.body;
 
-  const { id } = req.body;
-
-  if (typeof id !== 'number') {
-    return res.status(400).json({ error: 'ID must be a number in the body' });
+  if (typeof id !== 'number' || typeof name !== 'string') {
+    return res.status(400).json({ error: 'Both id (number) and name (string) are required in the body' });
   }
 
-  const index = users.findIndex(user => user.id === id);
+  const index = users.findIndex(user => user.id === id && user.name === name);
+
   if (index === -1) {
-    return res.status(404).json({ error: 'User not found' });
+    return res.status(404).json({ error: 'User not found or name does not match' });
   }
 
   const deletedUser = users.splice(index, 1)[0];
-  res.json({ message: 'User deleted by body ID', user: deletedUser });
+  res.json({ message: 'User deleted by ID and name', user: deletedUser });
 });
+
 
 // Start server
 app.listen(PORT, () => {
